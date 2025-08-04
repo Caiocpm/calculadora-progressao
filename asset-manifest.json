@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/calculadora-progressao/static/css/main.e250657b.css",
+    "main.js": "/calculadora-progressao/static/js/main.84fa4912.js",
+    "index.html": "/calculadora-progressao/index.html",
+    "main.e250657b.css.map": "/calculadora-progressao/static/css/main.e250657b.css.map",
+    "main.84fa4912.js.map": "/calculadora-progressao/static/js/main.84fa4912.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e250657b.css",
+    "static/js/main.84fa4912.js"
+  ]
+}

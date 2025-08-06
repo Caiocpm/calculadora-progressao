@@ -715,3 +715,4 @@ const ProgressionCalculator = () => {
 };
 
 export default ProgressionCalculator;
+// 📦 Exportando o componente

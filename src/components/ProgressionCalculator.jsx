@@ -1,13 +1,75 @@
 import React, { useState, useEffect } from "react";
-import { Calculator, Clock, Target, Zap, Globe } from "lucide-react";
+import {
+  Calculator,
+  Clock,
+  Target,
+  Zap,
+  Globe,
+  Image as ImageIcon,
+} from "lucide-react";
 
 const ProgressionCalculator = () => {
   const [generationRate, setGenerationRate] = useState("106.04");
-  const [generationLevel, setGenerationLevel] = useState("x");
+  const [generationLevel, setGenerationLevel] = useState("w");
   const [targetAmount, setTargetAmount] = useState("813.23");
   const [targetLevel, setTargetLevel] = useState("y");
   const [result, setResult] = useState(null);
   const [language, setLanguage] = useState("auto");
+  const [showImage, setShowImage] = useState(true);
+
+  // URL da imagem
+  const imageUrl = "https://i.ytimg.com/vi/SoWzBc32RpQ/maxresdefault.jpg";
+
+  // 🔢 PROGRESSÃO CORRIGIDA - Ordem correta dos níveis
+  const levels = [
+    "B",
+    "T",
+    "a",
+    "b",
+    "c",
+    "d",
+    "f",
+    "g",
+    "h",
+    "i",
+    "j",
+    "k",
+    "m",
+    "n",
+    "o",
+    "p",
+    "q",
+    "r",
+    "s",
+    "t",
+    "u",
+    "w",
+    "y",
+    "z",
+    "aa",
+    "ab",
+    "ac",
+    "ad",
+    "ae",
+    "af",
+    "ag",
+    "ah",
+    "ai",
+    "aj",
+    "ak",
+    "am",
+    "an",
+    "ao",
+    "ap",
+    "aq",
+    "ar",
+    "as",
+    "at",
+    "au",
+    "aw",
+    "ay",
+    "az",
+  ];
 
   // 🌍 Configuração completa de idiomas
   const translations = {
@@ -25,6 +87,9 @@ const ProgressionCalculator = () => {
       errorCalculation: "Não é possível calcular o tempo com esses valores.",
       errorGeneral: "Erro no cálculo. Verifique os valores inseridos.",
       languageAuto: "Automático",
+      showImage: "Mostrar Imagem",
+      hideImage: "Ocultar Imagem",
+      imageAlt: "Exemplo de Progressão",
       timeUnits: {
         day: "dia",
         days: "dias",
@@ -50,6 +115,9 @@ const ProgressionCalculator = () => {
       errorCalculation: "Cannot calculate time with these values.",
       errorGeneral: "Calculation error. Please check the entered values.",
       languageAuto: "Automatic",
+      showImage: "Show Image",
+      hideImage: "Hide Image",
+      imageAlt: "Progression Example",
       timeUnits: {
         day: "day",
         days: "days",
@@ -76,6 +144,9 @@ const ProgressionCalculator = () => {
       errorCalculation: "No es posible calcular el tiempo con estos valores.",
       errorGeneral: "Error en el cálculo. Verifica los valores ingresados.",
       languageAuto: "Automático",
+      showImage: "Mostrar Imagen",
+      hideImage: "Ocultar Imagen",
+      imageAlt: "Ejemplo de Progresión",
       timeUnits: {
         day: "día",
         days: "días",
@@ -103,6 +174,9 @@ const ProgressionCalculator = () => {
       errorCalculation: "Impossible de calculer le temps avec ces valeurs.",
       errorGeneral: "Erreur de calcul. Vérifiez les valeurs saisies.",
       languageAuto: "Automatique",
+      showImage: "Afficher Image",
+      hideImage: "Masquer Image",
+      imageAlt: "Exemple de Progression",
       timeUnits: {
         day: "jour",
         days: "jours",
@@ -175,47 +249,7 @@ const ProgressionCalculator = () => {
     }
   };
 
-  // Definição dos níveis
-  const levels = [
-    "w",
-    "x",
-    "y",
-    "z",
-    "B",
-    "T",
-    "a",
-    "b",
-    "c",
-    "d",
-    "e",
-    "f",
-    "g",
-    "h",
-    "i",
-    "j",
-    "k",
-    "m",
-    "n",
-    "o",
-    "p",
-    "q",
-    "r",
-    "t",
-    "u",
-    "v",
-    "ab",
-    "ad",
-    "ae",
-    "ag",
-    "ai",
-    "ak",
-    "am",
-    "ao",
-    "ar",
-    "at",
-  ];
-
-  // Funções de conversão
+  // 🔢 Funções de conversão com a progressão correta
   const convertToBase = (amount, level) => {
     const levelIndex = levels.indexOf(level);
     if (levelIndex === -1) return 0;
@@ -284,8 +318,8 @@ const ProgressionCalculator = () => {
       setResult({
         timeFormatted: formatTime(timeInSeconds),
         totalSeconds: timeInSeconds,
-        ratePerSecond: convertFromBase(ratePerSecond, "w"),
-        targetInBase: convertFromBase(targetInBase, "w"),
+        ratePerSecond: convertFromBase(ratePerSecond, "B"),
+        targetInBase: convertFromBase(targetInBase, "B"),
       });
     } catch (error) {
       setResult({ error: t("errorGeneral") });
@@ -294,7 +328,7 @@ const ProgressionCalculator = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-2 sm:p-4">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-8">
           {/* 📱 Header Mobile-First */}
           <div className="text-center mb-6 sm:mb-8">
@@ -378,7 +412,51 @@ const ProgressionCalculator = () => {
             </div>
           </div>
 
-          {/* 🎯 Layout Simplificado - Foco nos Inputs e Resultado */}
+          {/* 🖼️ Seção da Imagem */}
+          <div className="mb-6 sm:mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center">
+                <ImageIcon className="w-5 h-5 text-indigo-600 mr-2" />
+                <h3 className="text-lg font-semibold text-gray-800">
+                  {t("imageAlt")}
+                </h3>
+              </div>
+              <button
+                onClick={() => setShowImage(!showImage)}
+                className="text-sm text-indigo-600 hover:text-indigo-700 font-medium transition-colors duration-200"
+              >
+                {showImage ? t("hideImage") : t("showImage")}
+              </button>
+            </div>
+
+            {showImage && (
+              <div className="relative rounded-xl overflow-hidden shadow-lg border border-gray-200 bg-gray-50">
+                <img
+                  src={imageUrl}
+                  alt={t("imageAlt")}
+                  className="w-full h-auto max-h-96 object-contain transition-all duration-300 hover:scale-105"
+                  loading="lazy"
+                  onError={(e) => {
+                    e.target.style.display = "none";
+                    e.target.nextSibling.style.display = "flex";
+                  }}
+                />
+                <div className="hidden w-full h-48 bg-gray-100 items-center justify-center">
+                  <div className="text-center">
+                    <ImageIcon className="w-12 h-12 text-gray-400 mx-auto mb-2" />
+                    <p className="text-gray-500 text-sm">
+                      {getCurrentLanguage() === "pt" && "Imagem não disponível"}
+                      {getCurrentLanguage() === "en" && "Image not available"}
+                      {getCurrentLanguage() === "es" && "Imagen no disponible"}
+                      {getCurrentLanguage() === "fr" && "Image non disponible"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* 🎯 Layout Principal */}
           <div className="space-y-6 lg:grid lg:grid-cols-2 lg:gap-8 lg:space-y-0">
             {/* Input Section */}
             <div className="space-y-4 sm:space-y-6">
@@ -459,7 +537,7 @@ const ProgressionCalculator = () => {
               </button>
             </div>
 
-            {/* Results Section - Agora mais espaçoso */}
+            {/* Results Section */}
             <div className="space-y-4 sm:space-y-6">
               {/* Resultado */}
               {result ? (
@@ -499,20 +577,19 @@ const ProgressionCalculator = () => {
                           <span className="font-medium">
                             {t("ratePerSecond")}:
                           </span>{" "}
-                          {result.ratePerSecond.toExponential(2)}w
+                          {result.ratePerSecond.toExponential(2)}B
                         </p>
                         <p className="break-all">
                           <span className="font-medium">
                             {t("totalTarget")}:
                           </span>{" "}
-                          {result.targetInBase.toExponential(2)}w
+                          {result.targetInBase.toExponential(2)}B
                         </p>
                       </div>
                     </div>
                   )}
                 </div>
               ) : (
-                // Placeholder quando não há resultado
                 <div className="rounded-lg sm:rounded-xl p-6 sm:p-8 border border-gray-200 bg-gray-50">
                   <div className="text-center">
                     <Clock className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 mx-auto mb-4" />

@@ -17,10 +17,10 @@ const ProgressionCalculator = () => {
   const [language, setLanguage] = useState("auto");
   const [showImage, setShowImage] = useState(true);
 
-  // URL da imagem
-  const imageUrl = "https://i.ytimg.com/vi/SoWzBc32RpQ/maxresdefault.jpg";
+  // 🖼️ URL da imagem única
+  const imageUrl = "https://i.ytimg.com/vi/FTuAcp3Cib4/maxresdefault.jpg";
 
-  // 🔢 PROGRESSÃO CORRIGIDA - Ordem correta dos níveis
+  // 🔢 PROGRESSÃO CORRIGIDA
   const levels = [
     "B",
     "T",
@@ -249,7 +249,7 @@ const ProgressionCalculator = () => {
     }
   };
 
-  // 🔢 Funções de conversão com a progressão correta
+  // 🔢 Funções de conversão
   const convertToBase = (amount, level) => {
     const levelIndex = levels.indexOf(level);
     if (levelIndex === -1) return 0;
@@ -412,7 +412,7 @@ const ProgressionCalculator = () => {
             </div>
           </div>
 
-          {/* 🖼️ Seção da Imagem */}
+          {/* 🖼️ Seção da Imagem Única */}
           <div className="mb-6 sm:mb-8">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center">
@@ -441,6 +441,7 @@ const ProgressionCalculator = () => {
                     e.target.nextSibling.style.display = "flex";
                   }}
                 />
+                {/* Fallback se a imagem não carregar */}
                 <div className="hidden w-full h-48 bg-gray-100 items-center justify-center">
                   <div className="text-center">
                     <ImageIcon className="w-12 h-12 text-gray-400 mx-auto mb-2" />

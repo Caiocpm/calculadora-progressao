@@ -6,11 +6,14 @@ import {
   Zap,
   Globe,
   Image as ImageIcon,
+  Coins,
 } from "lucide-react";
 
 const ProgressionCalculator = () => {
   const [generationRate, setGenerationRate] = useState("106.04");
   const [generationLevel, setGenerationLevel] = useState("w");
+  const [currentGold, setCurrentGold] = useState("0");
+  const [currentGoldLevel, setCurrentGoldLevel] = useState("w");
   const [targetAmount, setTargetAmount] = useState("813.23");
   const [targetLevel, setTargetLevel] = useState("y");
   const [result, setResult] = useState(null);
@@ -77,15 +80,19 @@ const ProgressionCalculator = () => {
       title: "Calculadora de Progressão",
       subtitle: "Calcule quanto tempo levará para atingir seu objetivo",
       generationRate: "Taxa de Geração",
+      currentGold: "Ouro Atual",
       target: "Objetivo",
       calculate: "Calcular Tempo",
       timeNeeded: "Tempo Necessário",
       error: "Erro",
       ratePerSecond: "Taxa por segundo",
+      currentAmount: "Quantidade atual",
+      remainingAmount: "Quantidade restante",
       totalTarget: "Objetivo total",
       errorInvalidValues: "Por favor, insira valores válidos maiores que zero.",
       errorCalculation: "Não é possível calcular o tempo com esses valores.",
       errorGeneral: "Erro no cálculo. Verifique os valores inseridos.",
+      errorAlreadyReached: "Você já atingiu seu objetivo! 🎉",
       languageAuto: "Automático",
       showImage: "Mostrar Imagem",
       hideImage: "Ocultar Imagem",
@@ -105,15 +112,19 @@ const ProgressionCalculator = () => {
       title: "Progression Calculator",
       subtitle: "Calculate how long it will take to reach your goal",
       generationRate: "Generation Rate",
+      currentGold: "Current Gold",
       target: "Target",
       calculate: "Calculate Time",
       timeNeeded: "Time Needed",
       error: "Error",
       ratePerSecond: "Rate per second",
+      currentAmount: "Current amount",
+      remainingAmount: "Remaining amount",
       totalTarget: "Total target",
       errorInvalidValues: "Please enter valid values greater than zero.",
       errorCalculation: "Cannot calculate time with these values.",
       errorGeneral: "Calculation error. Please check the entered values.",
+      errorAlreadyReached: "You have already reached your goal! 🎉",
       languageAuto: "Automatic",
       showImage: "Show Image",
       hideImage: "Hide Image",
@@ -133,16 +144,20 @@ const ProgressionCalculator = () => {
       title: "Calculadora de Progresión",
       subtitle: "Calcula cuánto tiempo tomará alcanzar tu objetivo",
       generationRate: "Tasa de Generación",
+      currentGold: "Oro Actual",
       target: "Objetivo",
       calculate: "Calcular Tiempo",
       timeNeeded: "Tiempo Necesario",
       error: "Error",
       ratePerSecond: "Tasa por segundo",
+      currentAmount: "Cantidad actual",
+      remainingAmount: "Cantidad restante",
       totalTarget: "Objetivo total",
       errorInvalidValues:
         "Por favor, ingresa valores válidos mayores que cero.",
       errorCalculation: "No es posible calcular el tiempo con estos valores.",
       errorGeneral: "Error en el cálculo. Verifica los valores ingresados.",
+      errorAlreadyReached: "¡Ya has alcanzado tu objetivo! 🎉",
       languageAuto: "Automático",
       showImage: "Mostrar Imagen",
       hideImage: "Ocultar Imagen",
@@ -163,16 +178,20 @@ const ProgressionCalculator = () => {
       subtitle:
         "Calculez combien de temps il faudra pour atteindre votre objectif",
       generationRate: "Taux de Génération",
+      currentGold: "Or Actuel",
       target: "Objectif",
       calculate: "Calculer le Temps",
       timeNeeded: "Temps Nécessaire",
       error: "Erreur",
       ratePerSecond: "Taux par seconde",
+      currentAmount: "Montant actuel",
+      remainingAmount: "Montant restant",
       totalTarget: "Objectif total",
       errorInvalidValues:
         "Veuillez saisir des valeurs valides supérieures à zéro.",
       errorCalculation: "Impossible de calculer le temps avec ces valeurs.",
       errorGeneral: "Erreur de calcul. Vérifiez les valeurs saisies.",
+      errorAlreadyReached: "Vous avez déjà atteint votre objectif ! 🎉",
       languageAuto: "Automatique",
       showImage: "Afficher Image",
       hideImage: "Masquer Image",
@@ -295,9 +314,11 @@ const ProgressionCalculator = () => {
     return parts.join(", ");
   };
 
+  // 💰 Função de cálculo com ouro atual
   const calculateTime = () => {
     try {
       const rateValue = parseFloat(generationRate);
+      const currentValue = parseFloat(currentGold);
       const targetValue = parseFloat(targetAmount);
 
       if (isNaN(rateValue) || isNaN(targetValue) || rateValue <= 0) {
@@ -305,10 +326,21 @@ const ProgressionCalculator = () => {
         return;
       }
 
+      // Converter valores para base
       const rateInBase = convertToBase(rateValue, generationLevel);
+      const currentInBase = convertToBase(currentValue || 0, currentGoldLevel);
       const targetInBase = convertToBase(targetValue, targetLevel);
+
+      // Verificar se já atingiu o objetivo
+      if (currentInBase >= targetInBase) {
+        setResult({ error: t("errorAlreadyReached") });
+        return;
+      }
+
+      // Calcular quantidade restante
+      const remainingInBase = targetInBase - currentInBase;
       const ratePerSecond = rateInBase / 5;
-      const timeInSeconds = targetInBase / ratePerSecond;
+      const timeInSeconds = remainingInBase / ratePerSecond;
 
       if (!isFinite(timeInSeconds) || timeInSeconds < 0) {
         setResult({ error: t("errorCalculation") });
@@ -319,7 +351,9 @@ const ProgressionCalculator = () => {
         timeFormatted: formatTime(timeInSeconds),
         totalSeconds: timeInSeconds,
         ratePerSecond: convertFromBase(ratePerSecond, "B"),
-        targetInBase: convertFromBase(targetInBase, "B"),
+        currentAmount: convertFromBase(currentInBase, "B"),
+        remainingAmount: convertFromBase(remainingInBase, "B"),
+        totalTarget: convertFromBase(targetInBase, "B"),
       });
     } catch (error) {
       setResult({ error: t("errorGeneral") });
@@ -441,7 +475,6 @@ const ProgressionCalculator = () => {
                     e.target.nextSibling.style.display = "flex";
                   }}
                 />
-                {/* Fallback se a imagem não carregar */}
                 <div className="hidden w-full h-48 bg-gray-100 items-center justify-center">
                   <div className="text-center">
                     <ImageIcon className="w-12 h-12 text-gray-400 mx-auto mb-2" />
@@ -494,6 +527,38 @@ const ProgressionCalculator = () => {
                       /5s
                     </span>
                   </div>
+                </div>
+              </div>
+
+              {/* 💰 Ouro Atual */}
+              <div className="bg-yellow-50 rounded-lg sm:rounded-xl p-4 sm:p-6 border border-yellow-200 hover-scale">
+                <div className="flex items-center mb-3 sm:mb-4">
+                  <Coins className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-600 mr-2" />
+                  <h3 className="text-base sm:text-lg font-semibold text-yellow-800">
+                    {t("currentGold")}
+                  </h3>
+                </div>
+                <div className="space-y-3 sm:space-y-0 sm:flex sm:gap-3">
+                  <input
+                    type="number"
+                    value={currentGold}
+                    onChange={(e) => setCurrentGold(e.target.value)}
+                    className="w-full sm:flex-1 px-3 sm:px-4 py-2 sm:py-3 border border-yellow-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm sm:text-base transition-all duration-200"
+                    placeholder="0"
+                    step="0.01"
+                    min="0"
+                  />
+                  <select
+                    value={currentGoldLevel}
+                    onChange={(e) => setCurrentGoldLevel(e.target.value)}
+                    className="w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-3 border border-yellow-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm sm:text-base transition-all duration-200"
+                  >
+                    {levels.map((level) => (
+                      <option key={level} value={level}>
+                        {level}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
@@ -582,9 +647,21 @@ const ProgressionCalculator = () => {
                         </p>
                         <p className="break-all">
                           <span className="font-medium">
+                            {t("currentAmount")}:
+                          </span>{" "}
+                          {result.currentAmount.toExponential(2)}B
+                        </p>
+                        <p className="break-all">
+                          <span className="font-medium">
+                            {t("remainingAmount")}:
+                          </span>{" "}
+                          {result.remainingAmount.toExponential(2)}B
+                        </p>
+                        <p className="break-all">
+                          <span className="font-medium">
                             {t("totalTarget")}:
                           </span>{" "}
-                          {result.targetInBase.toExponential(2)}B
+                          {result.totalTarget.toExponential(2)}B
                         </p>
                       </div>
                     </div>

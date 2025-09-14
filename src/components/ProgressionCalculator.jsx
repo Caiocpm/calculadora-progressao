@@ -7,6 +7,7 @@ import {
   Globe,
   Image as ImageIcon,
   Coins,
+  Shield,
 } from "lucide-react";
 
 const ProgressionCalculator = () => {
@@ -20,6 +21,9 @@ const ProgressionCalculator = () => {
   const [language, setLanguage] = useState("auto");
   const [showImage, setShowImage] = useState(true);
 
+  // 🏦 Estados para Gold Vault
+  const [useGoldVault, setUseGoldVault] = useState(false);
+
   // 🖼️ URL da imagem única
   const imageUrl = "https://i.ytimg.com/vi/FTuAcp3Cib4/maxresdefault.jpg";
 
@@ -31,14 +35,12 @@ const ProgressionCalculator = () => {
     "b",
     "c",
     "d",
-    "e",
     "f",
     "g",
     "h",
     "i",
     "j",
     "k",
-    "l",
     "m",
     "n",
     "o",
@@ -48,9 +50,7 @@ const ProgressionCalculator = () => {
     "s",
     "t",
     "u",
-    "v",
     "w",
-    "x",
     "y",
     "z",
     "aa",
@@ -64,7 +64,6 @@ const ProgressionCalculator = () => {
     "ai",
     "aj",
     "ak",
-    "al",
     "am",
     "an",
     "ao",
@@ -75,7 +74,6 @@ const ProgressionCalculator = () => {
     "at",
     "au",
     "aw",
-    "ax",
     "ay",
     "az",
   ];
@@ -88,6 +86,11 @@ const ProgressionCalculator = () => {
       generationRate: "Taxa de Geração",
       currentGold: "Ouro Atual",
       target: "Objetivo",
+      goldVault: "Calcular Gold Vault",
+      goldVaultDescription: "A cada 20 minutos: +25.02% da taxa de geração",
+      goldVaultCount: "Gold Vaults obtidos",
+      goldVaultBonusTotal: "Bônus total dos vaults",
+      finalRate: "Taxa final (com vaults)",
       calculate: "Calcular Tempo",
       timeNeeded: "Tempo Necessário",
       error: "Erro",
@@ -104,6 +107,10 @@ const ProgressionCalculator = () => {
       hideImage: "Ocultar Imagem",
       imageAlt: "Exemplo de Progressão",
       timeUnits: {
+        year: "ano",
+        years: "anos",
+        month: "mês",
+        months: "meses",
         day: "dia",
         days: "dias",
         hour: "hora",
@@ -120,6 +127,11 @@ const ProgressionCalculator = () => {
       generationRate: "Generation Rate",
       currentGold: "Current Gold",
       target: "Target",
+      goldVault: "Calculate Gold Vault",
+      goldVaultDescription: "Every 20 minutes: +25.02% of generation rate",
+      goldVaultCount: "Gold Vaults obtained",
+      goldVaultBonusTotal: "Total vault bonus",
+      finalRate: "Final rate (with vaults)",
       calculate: "Calculate Time",
       timeNeeded: "Time Needed",
       error: "Error",
@@ -136,6 +148,10 @@ const ProgressionCalculator = () => {
       hideImage: "Hide Image",
       imageAlt: "Progression Example",
       timeUnits: {
+        year: "year",
+        years: "years",
+        month: "month",
+        months: "months",
         day: "day",
         days: "days",
         hour: "hour",
@@ -152,6 +168,11 @@ const ProgressionCalculator = () => {
       generationRate: "Tasa de Generación",
       currentGold: "Oro Actual",
       target: "Objetivo",
+      goldVault: "Calcular Gold Vault",
+      goldVaultDescription: "Cada 20 minutos: +25.02% de la tasa de generación",
+      goldVaultCount: "Gold Vaults obtenidos",
+      goldVaultBonusTotal: "Bonificación total de vaults",
+      finalRate: "Tasa final (con vaults)",
       calculate: "Calcular Tiempo",
       timeNeeded: "Tiempo Necesario",
       error: "Error",
@@ -169,6 +190,10 @@ const ProgressionCalculator = () => {
       hideImage: "Ocultar Imagen",
       imageAlt: "Ejemplo de Progresión",
       timeUnits: {
+        year: "año",
+        years: "años",
+        month: "mes",
+        months: "meses",
         day: "día",
         days: "días",
         hour: "hora",
@@ -186,6 +211,12 @@ const ProgressionCalculator = () => {
       generationRate: "Taux de Génération",
       currentGold: "Or Actuel",
       target: "Objectif",
+      goldVault: "Calculer Gold Vault",
+      goldVaultDescription:
+        "Toutes les 20 minutes: +25.02% du taux de génération",
+      goldVaultCount: "Gold Vaults obtenus",
+      goldVaultBonusTotal: "Bonus total des vaults",
+      finalRate: "Taux final (avec vaults)",
       calculate: "Calculer le Temps",
       timeNeeded: "Temps Nécessaire",
       error: "Erreur",
@@ -203,6 +234,10 @@ const ProgressionCalculator = () => {
       hideImage: "Masquer Image",
       imageAlt: "Exemple de Progression",
       timeUnits: {
+        year: "année",
+        years: "années",
+        month: "mois",
+        months: "mois",
         day: "jour",
         days: "jours",
         hour: "heure",
@@ -288,12 +323,34 @@ const ProgressionCalculator = () => {
   };
 
   const formatTime = (totalSeconds) => {
-    const days = Math.floor(totalSeconds / (24 * 3600));
-    const hours = Math.floor((totalSeconds % (24 * 3600)) / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = Math.floor(totalSeconds % 60);
+    // Calcular todas as unidades de tempo
+    const years = Math.floor(totalSeconds / (365.25 * 24 * 3600));
+    const remainingAfterYears = totalSeconds % (365.25 * 24 * 3600);
+
+    const months = Math.floor(remainingAfterYears / (30.44 * 24 * 3600));
+    const remainingAfterMonths = remainingAfterYears % (30.44 * 24 * 3600);
+
+    const days = Math.floor(remainingAfterMonths / (24 * 3600));
+    const remainingAfterDays = remainingAfterMonths % (24 * 3600);
+
+    const hours = Math.floor(remainingAfterDays / 3600);
+    const remainingAfterHours = remainingAfterDays % 3600;
+
+    const minutes = Math.floor(remainingAfterHours / 60);
+    const seconds = Math.floor(remainingAfterHours % 60);
 
     const parts = [];
+
+    if (years > 0) {
+      const yearUnit = years === 1 ? t("timeUnits.year") : t("timeUnits.years");
+      parts.push(`${years} ${yearUnit}`);
+    }
+
+    if (months > 0) {
+      const monthUnit =
+        months === 1 ? t("timeUnits.month") : t("timeUnits.months");
+      parts.push(`${months} ${monthUnit}`);
+    }
 
     if (days > 0) {
       const dayUnit = days === 1 ? t("timeUnits.day") : t("timeUnits.days");
@@ -320,7 +377,7 @@ const ProgressionCalculator = () => {
     return parts.join(", ");
   };
 
-  // 💰 Função de cálculo com ouro atual
+  // 🏦 Função de cálculo com Gold Vault progressivo
   const calculateTime = () => {
     try {
       const rateValue = parseFloat(generationRate);
@@ -333,7 +390,7 @@ const ProgressionCalculator = () => {
       }
 
       // Converter valores para base
-      const rateInBase = convertToBase(rateValue, generationLevel);
+      const baseRateInBase = convertToBase(rateValue, generationLevel);
       const currentInBase = convertToBase(currentValue || 0, currentGoldLevel);
       const targetInBase = convertToBase(targetValue, targetLevel);
 
@@ -345,21 +402,72 @@ const ProgressionCalculator = () => {
 
       // Calcular quantidade restante
       const remainingInBase = targetInBase - currentInBase;
-      const ratePerSecond = rateInBase / 5;
-      const timeInSeconds = remainingInBase / ratePerSecond;
 
-      if (!isFinite(timeInSeconds) || timeInSeconds < 0) {
+      let totalTime = 0;
+      let currentRemaining = remainingInBase;
+      let currentRate = baseRateInBase;
+      let goldVaultCount = 0;
+      let goldVaultBonusTotal = 0;
+
+      if (useGoldVault) {
+        // 🏦 Cálculo progressivo do Gold Vault
+        const goldVaultInterval = 20 * 60; // 20 minutos em segundos
+        const goldVaultBonus = 0.2502; // 25.02%
+
+        while (currentRemaining > 0) {
+          // Taxa atual por segundo
+          const currentRatePerSecond = currentRate / 5;
+
+          // Quantidade que será gerada nos próximos 20 minutos
+          const amountIn20Minutes = currentRatePerSecond * goldVaultInterval;
+
+          if (amountIn20Minutes >= currentRemaining) {
+            // Se conseguir completar nos próximos 20 minutos
+            const timeToComplete = currentRemaining / currentRatePerSecond;
+            totalTime += timeToComplete;
+            currentRemaining = 0;
+          } else {
+            // Adiciona 20 minutos ao tempo total
+            totalTime += goldVaultInterval;
+            currentRemaining -= amountIn20Minutes;
+
+            // Adiciona um novo Gold Vault (25.02% de bônus)
+            goldVaultCount++;
+            const newBonus = baseRateInBase * goldVaultBonus;
+            currentRate += newBonus;
+            goldVaultBonusTotal += newBonus;
+          }
+
+          // Proteção contra loop infinito
+          if (goldVaultCount > 1000) {
+            setResult({ error: t("errorCalculation") });
+            return;
+          }
+        }
+      } else {
+        // Cálculo normal sem Gold Vault
+        const ratePerSecond = baseRateInBase / 5;
+        totalTime = remainingInBase / ratePerSecond;
+      }
+
+      if (!isFinite(totalTime) || totalTime < 0) {
         setResult({ error: t("errorCalculation") });
         return;
       }
 
       setResult({
-        timeFormatted: formatTime(timeInSeconds),
-        totalSeconds: timeInSeconds,
-        ratePerSecond: convertFromBase(ratePerSecond, "B"),
+        timeFormatted: formatTime(totalTime),
+        totalSeconds: totalTime,
+        baseRatePerSecond: convertFromBase(baseRateInBase / 5, "B"),
+        goldVaultCount: useGoldVault ? goldVaultCount : 0,
+        goldVaultBonusTotal: useGoldVault
+          ? convertFromBase(goldVaultBonusTotal / 5, "B")
+          : 0,
+        finalRatePerSecond: convertFromBase(currentRate / 5, "B"),
         currentAmount: convertFromBase(currentInBase, "B"),
         remainingAmount: convertFromBase(remainingInBase, "B"),
         totalTarget: convertFromBase(targetInBase, "B"),
+        useGoldVault: useGoldVault,
       });
     } catch (error) {
       setResult({ error: t("errorGeneral") });
@@ -400,10 +508,10 @@ const ProgressionCalculator = () => {
                     className="px-2 py-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white text-xs"
                   >
                     <option value="auto">🌐 {t("languageAuto")}</option>
-                    <option value="pt">🇧🇷 PT</option>
-                    <option value="en">🇺🇸 EN</option>
-                    <option value="es">🇪🇸 ES</option>
-                    <option value="fr">🇫🇷 FR</option>
+                    <option value="pt">🟢 PT</option>
+                    <option value="en">🔵 EN</option>
+                    <option value="es">🟡 ES</option>
+                    <option value="fr">⚪ FR</option>
                   </select>
                 </div>
               </div>
@@ -441,10 +549,10 @@ const ProgressionCalculator = () => {
                     className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white text-sm"
                   >
                     <option value="auto">🌐 {t("languageAuto")}</option>
-                    <option value="pt">🇧🇷 Português</option>
-                    <option value="en">🇺🇸 English</option>
-                    <option value="es">🇪🇸 Español</option>
-                    <option value="fr">🇫🇷 Français</option>
+                    <option value="pt">🟢 Português</option>
+                    <option value="en">🔵 English</option>
+                    <option value="es">🟡 Español</option>
+                    <option value="fr">⚪ Français</option>
                   </select>
                 </div>
               </div>
@@ -534,6 +642,30 @@ const ProgressionCalculator = () => {
                     </span>
                   </div>
                 </div>
+              </div>
+
+              {/* 🏦 Gold Vault */}
+              <div className="bg-purple-50 rounded-lg sm:rounded-xl p-4 sm:p-6 border border-purple-200 hover-scale">
+                <div className="flex items-center justify-between mb-3 sm:mb-4">
+                  <div className="flex items-center">
+                    <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 mr-2" />
+                    <h3 className="text-base sm:text-lg font-semibold text-purple-800">
+                      {t("goldVault")}
+                    </h3>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={useGoldVault}
+                      onChange={(e) => setUseGoldVault(e.target.checked)}
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                  </label>
+                </div>
+                <p className="text-sm text-purple-700 bg-purple-100 rounded-lg p-3">
+                  {t("goldVaultDescription")}
+                </p>
               </div>
 
               {/* 💰 Ouro Atual */}
@@ -649,8 +781,30 @@ const ProgressionCalculator = () => {
                           <span className="font-medium">
                             {t("ratePerSecond")}:
                           </span>{" "}
-                          {result.ratePerSecond.toExponential(2)}B
+                          {result.baseRatePerSecond.toExponential(2)}B
                         </p>
+                        {result.useGoldVault && (
+                          <>
+                            <p className="break-all">
+                              <span className="font-medium">
+                                {t("goldVaultCount")}:
+                              </span>{" "}
+                              {result.goldVaultCount}
+                            </p>
+                            <p className="break-all">
+                              <span className="font-medium">
+                                {t("goldVaultBonusTotal")}:
+                              </span>{" "}
+                              {result.goldVaultBonusTotal.toExponential(2)}B
+                            </p>
+                            <p className="break-all">
+                              <span className="font-medium">
+                                {t("finalRate")}:
+                              </span>{" "}
+                              {result.finalRatePerSecond.toExponential(2)}B
+                            </p>
+                          </>
+                        )}
                         <p className="break-all">
                           <span className="font-medium">
                             {t("currentAmount")}:
@@ -721,4 +875,3 @@ const ProgressionCalculator = () => {
 };
 
 export default ProgressionCalculator;
-// 📦 Exportando o componente

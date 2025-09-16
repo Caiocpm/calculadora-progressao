@@ -78,7 +78,9 @@ const ProgressionCalculator = () => {
     "as",
     "at",
     "au",
+    "av",
     "aw",
+    "ax",
     "ay",
     "az",
   ];

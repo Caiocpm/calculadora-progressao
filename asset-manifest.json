@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/calculadora-progressao/static/css/main.664f9313.css",
-    "main.js": "/calculadora-progressao/static/js/main.fc048e52.js",
+    "main.js": "/calculadora-progressao/static/js/main.9409e34e.js",
     "index.html": "/calculadora-progressao/index.html",
     "main.664f9313.css.map": "/calculadora-progressao/static/css/main.664f9313.css.map",
-    "main.fc048e52.js.map": "/calculadora-progressao/static/js/main.fc048e52.js.map"
+    "main.9409e34e.js.map": "/calculadora-progressao/static/js/main.9409e34e.js.map"
   },
   "entrypoints": [
     "static/css/main.664f9313.css",
-    "static/js/main.fc048e52.js"
+    "static/js/main.9409e34e.js"
   ]
 }
